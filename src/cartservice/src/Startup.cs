@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using cartservice.cartstore;
 using cartservice.services;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace cartservice
 {
@@ -57,6 +58,7 @@ namespace cartservice
 
 
             services.AddGrpc();
+            services.TryAddScoped<ICartValidator, CartValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
