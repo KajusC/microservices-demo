@@ -1,0 +1,29 @@
+name: Docs slash command
+
+on:
+    issue_comment:
+        types: [created]
+
+jobs:
+    trigger:
+        if: >
+            github.event.issue.pull_request &&
+            startsWith(github.event.comment.body, '/docs') &&
+            contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
+        runs-on: ubuntu-latest
+        steps:
+            - name: React to the comment
+              env:
+                  GH_TOKEN: ${{ secrets.DOCS_BOT_TOKEN }}
+              run: |
+                  gh api repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
+                    -X POST -f content=eyes
+
+            - name: Start the docs workflow
+              env:
+                  GH_TOKEN: ${{ secrets.DOCS_BOT_TOKEN }}
+              run: |
+                  gh workflow run docs-update.yml \
+                    --repo KajusC/documentation-repo --ref main \
+                    -f code_repo=${{ github.repository }} \
+                    -f pr_number=${{ github.event.issue.number }}
