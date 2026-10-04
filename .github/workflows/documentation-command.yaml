@@ -23,7 +23,7 @@ jobs:
               env:
                   GH_TOKEN: ${{ secrets.DOCS_BOT_TOKEN }}
               run: |
-                  gh workflow run documentation-command.yaml \
+                  gh workflow run docs-update.yml \
                     --repo KajusC/documentation-repo --ref main \
                     -f code_repo=${{ github.repository }} \
                     -f pr_number=${{ github.event.issue.number }}
